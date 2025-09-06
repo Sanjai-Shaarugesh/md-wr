@@ -1,0 +1,7 @@
+<?xml version="1.0" encoding="UTF-8"?>
+<gresources>
+  <gresource prefix="/org/md-wr/com">
+     <file>window.ui</file>
+     <file>text-editor.ui</file>
+  </gresource>
+</gresources>

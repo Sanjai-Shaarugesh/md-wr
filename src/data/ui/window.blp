@@ -1,0 +1,238 @@
+using Gtk 4.0;
+using Adw 1;
+
+Adw.ApplicationWindow main_window {
+    default-width: 800;
+    default-height: 600;
+
+    Gtk.Box main_container {
+        orientation: horizontal;
+        hexpand: true;
+        vexpand: true;
+
+        // Sidebar with menu
+        Gtk.ListBox sidebar {
+            width-request: 200;
+            css-classes: ["sidebar"];
+
+            Gtk.ListBoxRow {
+                selectable: false;
+                child: Gtk.Box {
+                    orientation: vertical;
+                    spacing: 6;
+                    margin-top: 12;
+                    margin-bottom: 12;
+                    margin-start: 12;
+                    margin-end: 12;
+
+                    Gtk.Button add_button {
+                        icon-name: "list-add-symbolic";
+                        css-classes: ["flat"];
+                        halign: start;
+                    }
+
+                    Gtk.Label {
+                        label: "ParaboLic";
+                        css-classes: ["title"];
+                    }
+
+                    Gtk.ListBox menu_list {
+                        selection-mode: none;
+
+                        Gtk.ListBoxRow {
+                            child: Gtk.Box {
+                                spacing: 6;
+                                margin-top: 6;
+                                margin-bottom: 6;
+                                margin-start: 6;
+                                margin-end: 6;
+
+                                Gtk.Image {
+                                    icon-name: "go-home-symbolic";
+                                    pixel-size: 16;
+                                }
+
+                                Gtk.Label {
+                                    label: "Home";
+                                    css-classes: ["menu-item"];
+                                }
+                            };
+                        }
+
+                        Gtk.ListBoxRow {
+                            child: Gtk.Box {
+                                spacing: 6;
+                                margin-top: 6;
+                                margin-bottom: 6;
+                                margin-start: 6;
+                                margin-end: 6;
+
+                                Gtk.Image {
+                                    icon-name: "dialog-password-symbolic";
+                                    pixel-size: 16;
+                                }
+
+                                Gtk.Label {
+                                    label: "Keyring";
+                                    css-classes: ["menu-item"];
+                                }
+                            };
+                        }
+
+                        Gtk.ListBoxRow {
+                            child: Gtk.Box {
+                                spacing: 6;
+                                margin-top: 6;
+                                margin-bottom: 6;
+                                margin-start: 6;
+                                margin-end: 6;
+
+                                Gtk.Image {
+                                    icon-name: "view-history-symbolic";
+                                    pixel-size: 16;
+                                }
+
+                                Gtk.Label {
+                                    label: "History";
+                                    css-classes: ["menu-item"];
+                                }
+                            };
+                        }
+
+                        Gtk.ListBoxRow {
+                            child: Gtk.Box {
+                                spacing: 6;
+                                margin-top: 12;
+                                margin-bottom: 6;
+                                margin-start: 6;
+                                margin-end: 6;
+                                css-classes: ["download-section"];
+
+                                Gtk.Label {
+                                    label: "Downloads";
+                                    css-classes: ["section-title"];
+                                }
+                            };
+                        }
+
+                        Gtk.ListBoxRow {
+                            child: Gtk.Box {
+                                spacing: 6;
+                                margin-top: 6;
+                                margin-bottom: 6;
+                                margin-start: 6;
+                                margin-end: 6;
+
+                                Gtk.Image {
+                                    icon-name: "media-playback-start-symbolic";
+                                    pixel-size: 16;
+                                }
+
+                                Gtk.Label {
+                                    label: "Downloading";
+                                    css-classes: ["menu-item"];
+                                }
+
+                                Gtk.Label {
+                                    label: "0";
+                                    halign: end;
+                                    hexpand: true;
+                                }
+                            };
+                        }
+
+                        Gtk.ListBoxRow {
+                            child: Gtk.Box {
+                                spacing: 6;
+                                margin-top: 6;
+                                margin-bottom: 6;
+                                margin-start: 6;
+                                margin-end: 6;
+
+                                Gtk.Image {
+                                    icon-name: "media-seek-forward-symbolic";
+                                    pixel-size: 16;
+                                }
+
+                                Gtk.Label {
+                                    label: "Queued";
+                                    css-classes: ["menu-item"];
+                                }
+
+                                Gtk.Label {
+                                    label: "0";
+                                    halign: end;
+                                    hexpand: true;
+                                }
+                            };
+                        }
+
+                        Gtk.ListBoxRow {
+                            child: Gtk.Box {
+                                spacing: 6;
+                                margin-top: 6;
+                                margin-bottom: 6;
+                                margin-start: 6;
+                                margin-end: 6;
+
+                                Gtk.Image {
+                                    icon-name: "media-playlist-repeat-symbolic";
+                                    pixel-size: 16;
+                                }
+
+                                Gtk.Label {
+                                    label: "Completed";
+                                    css-classes: ["menu-item"];
+                                }
+
+                                Gtk.Label {
+                                    label: "0";
+                                    halign: end;
+                                    hexpand: true;
+                                }
+                            };
+                        }
+                    }
+                };
+            }
+        }
+
+        // Main content area
+        Gtk.Box content_area {
+            orientation: vertical;
+            hexpand: true;
+            vexpand: true;
+            css-classes: ["content"];
+
+            Gtk.Box central_box {
+                vexpand: true;
+                valign: center;
+                halign: center;
+
+                Gtk.Image {
+                    icon-name: "parabolic-download-symbolic"; // Placeholder icon name; replace with actual icon
+                    pixel-size: 128;
+                    css-classes: ["download-icon"];
+                }
+
+                Gtk.Label {
+                    label: "Download Media";
+                    css-classes: ["subtitle"];
+                }
+
+                Gtk.Label {
+                    label: "Add a video, audio, or playlist URL to start downloading";
+                    css-classes: ["description"];
+                }
+            }
+
+            [overlay]
+            Gtk.Button add_download_button {
+                label: "Add Download";
+                css-classes: ["add-button"];
+                halign: center;
+                margin-bottom: 24;
+            }
+        }
+    }
+}

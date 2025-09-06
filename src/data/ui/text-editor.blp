@@ -1,0 +1,120 @@
+using Gtk 4.0;
+
+template $CustomTextView : Gtk.Widget {
+    layout-manager: Gtk.BoxLayout {
+        orientation: vertical;
+    };
+
+    Box {
+        orientation: vertical;
+        spacing: 12;
+        margin-top: 12;
+        margin-bottom: 12;
+        margin-start: 12;
+        margin-end: 12;
+
+        // Header bar with window controls
+        [overlay]
+        Gtk.HeaderBar header_bar {
+            title-widget: Gtk.Label {
+                label: "Custom Text Editor";
+                css-classes: ["title"];
+            };
+            
+           
+            css-classes: ["flat"];
+        }
+
+        // Header with save and clear buttons
+        Box header_box {
+            orientation: horizontal;
+            spacing: 12;
+            margin-bottom: 6;
+
+            Label title_label {
+                name: "title_label";
+                label: "Custom Text Editor";
+                halign: start;
+                hexpand: true;
+                css-classes: ["heading"];
+            }
+
+            Button save_button {
+                name: "save_button";
+                icon-name: "document-save-symbolic";
+                tooltip-text: "Save text to settings";
+                css-classes: ["flat"];
+            }
+
+            Button clear_button {
+                name: "clear_button";
+                icon-name: "edit-clear-all-symbolic";
+                tooltip-text: "Clear all text";
+                css-classes: ["flat", "destructive-action"];
+            }
+        }
+
+        // Main text editing area with overlay for placeholder
+        Overlay text_overlay {
+            vexpand: true;
+
+            ScrolledWindow scrolled_window {
+                name: "scrolled_window";
+                width-request: 500;
+                height-request: 300;
+                hscrollbar-policy: automatic;
+                vscrollbar-policy: automatic;
+                css-classes: ["card"];
+
+                TextView text_view {
+                    name: "text_view";
+                    wrap-mode: word_char;
+                    accepts-tab: true;
+                    editable: true;
+                    cursor-visible: true;
+                    left-margin: 16;
+                    right-margin: 16;
+                    top-margin: 16;
+                    bottom-margin: 16;
+                    css-classes: ["monospace"];
+                }
+            }
+
+            [overlay]
+            Label placeholder_label {
+                name: "placeholder_label";
+                label: "Start typing your text here...";
+                halign: start;
+                valign: start;
+                margin-start: 28;
+                margin-top: 28;
+                sensitive: false;
+                css-classes: ["dim-label"];
+            }
+        }
+
+        // Footer with statistics
+        Box stats_box {
+            orientation: horizontal;
+            spacing: 16;
+            halign: end;
+            margin-top: 6;
+
+            Label char_count_label {
+                name: "char_count_label";
+                label: "Characters: 0";
+                css-classes: ["caption", "dim-label"];
+            }
+
+            Separator {
+                orientation: vertical;
+            }
+
+            Label word_count_label {
+                name: "word_count_label";
+                label: "Words: 0";
+                css-classes: ["caption", "dim-label"];
+            }
+        }
+    }
+}
