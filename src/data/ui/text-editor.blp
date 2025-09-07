@@ -4,15 +4,90 @@ template $CustomTextView : Gtk.Widget {
     layout-manager: Gtk.BoxLayout {
         orientation: vertical;
     };
-    Box {
-        orientation: vertical;
-        hexpand: true;
-        vexpand: true;
+    
+    // Use Overlay to allow header bar to float over content
+    Overlay main_overlay {
+        // Main content area (full screen)
+        Box content_box {
+            orientation: vertical;
+            hexpand: true;
+            vexpand: true;
+            
+            // Main text editing area with full coverage
+            ScrolledWindow scrolled_window {
+                name: "scrolled_window";
+                hexpand: true;
+                vexpand: true;
+                hscrollbar-policy: automatic;
+                vscrollbar-policy: automatic;
+                has-frame: false;
+                Overlay text_overlay {
+                    TextView text_view {
+                        name: "text_view";
+                        wrap-mode: word_char;
+                        accepts-tab: true;
+                        editable: true;
+                        cursor-visible: true;
+                        left-margin: 20;
+                        right-margin: 20;
+                        top-margin: 550; // Increased to push text further down
+                        bottom-margin: 20;
+                        
+                        pixels-above-lines: 50;
+                        pixels-below-lines: 25;
+                        indent: 0;
+                    }
+                    [overlay]
+                    Label placeholder_label {
+                        name: "placeholder_label";
+                        label: "Start typing your text here...";
+                        halign: center;
+                        valign: center;
+                        margin-top: 80; // Position placeholder below header
+                        sensitive: false;
+                        css-classes: ["dim-label"];
+                    }
+                }
+            }
+            
+            // Clean status bar at bottom
+            [overlay]
+            ActionBar status_bar {
+                [start]
+                Label file_status {
+                    name: "file_status";
+                    label: "Plain Text";
+                    css-classes: ["dim-label"];
+                }
+                [end]
+                Box stats_box {
+                    orientation: horizontal;
+                    spacing: 12;
+                    halign: end;
+                    Label char_count_label {
+                        name: "char_count_label";
+                        label: "Characters: 0";
+                        css-classes: ["dim-label"];
+                    }
+                    Separator {
+                        orientation: vertical;
+                    }
+                    Label word_count_label {
+                        name: "word_count_label";
+                        label: "Words: 0";
+                        css-classes: ["dim-label"];
+                    }
+                }
+            }
+        }
         
-        
-        // Clean header bar with native styling
+        // Floating header bar overlay
+        [overlay]
         Gtk.HeaderBar header_bar {
-             css-classes: ["flat"];
+            halign: fill;
+            valign: start;
+            css-classes: ["flat", "floating"];
+            
             title-widget: Gtk.Label title_label {
                 name: "title_label";
                 label: "Text Editor";
@@ -45,67 +120,6 @@ template $CustomTextView : Gtk.Widget {
                 icon-name: "system-search-symbolic";
                 tooltip-text: "Find (Ctrl+F)";
                 css-classes: ["flat"];
-            }
-        }
-        // Main text editing area with full coverage
-        ScrolledWindow scrolled_window {
-            name: "scrolled_window";
-            hexpand: true;
-            vexpand: true;
-            hscrollbar-policy: automatic;
-            vscrollbar-policy: automatic;
-            has-frame: false;
-            Overlay text_overlay {
-                TextView text_view {
-                    name: "text_view";
-                    wrap-mode: word_char;
-                    accepts-tab: true;
-                    editable: true;
-                    cursor-visible: true;
-                    left-margin: 20;
-                    right-margin: 20;
-                    top-margin: 20;
-                    bottom-margin: 20;
-                }
-                [overlay]
-                Label placeholder_label {
-                    name: "placeholder_label";
-                    label: "Start typing your text here...";
-                    halign: start;
-                    valign: start;
-                    margin-start: 32;
-                    margin-top: 32;
-                    sensitive: false;
-                    css-classes: ["dim-label"];
-                }
-            }
-        }
-        // Clean status bar at bottom
-        ActionBar status_bar {
-            [start]
-            Label file_status {
-                name: "file_status";
-                label: "Plain Text";
-                css-classes: ["dim-label"];
-            }
-            [end]
-            Box stats_box {
-                orientation: horizontal;
-                spacing: 12;
-                halign: end;
-                Label char_count_label {
-                    name: "char_count_label";
-                    label: "Characters: 0";
-                    css-classes: ["dim-label"];
-                }
-                Separator {
-                    orientation: vertical;
-                }
-                Label word_count_label {
-                    name: "word_count_label";
-                    label: "Words: 0";
-                    css-classes: ["dim-label"];
-                }
             }
         }
     }

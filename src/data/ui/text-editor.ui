@@ -13,13 +13,98 @@ corresponding .blp file and regenerate this file with blueprint-compiler.
       </object>
     </property>
     <child>
-      <object class="GtkBox">
-        <property name="orientation">1</property>
-        <property name="hexpand">true</property>
-        <property name="vexpand">true</property>
+      <object class="GtkOverlay" id="main_overlay">
         <child>
+          <object class="GtkBox" id="content_box">
+            <property name="orientation">1</property>
+            <property name="hexpand">true</property>
+            <property name="vexpand">true</property>
+            <child>
+              <object class="GtkScrolledWindow" id="scrolled_window">
+                <property name="name">scrolled_window</property>
+                <property name="hexpand">true</property>
+                <property name="vexpand">true</property>
+                <property name="hscrollbar-policy">1</property>
+                <property name="vscrollbar-policy">1</property>
+                <property name="has-frame">false</property>
+                <child>
+                  <object class="GtkOverlay" id="text_overlay">
+                    <child>
+                      <object class="GtkTextView" id="text_view">
+                        <property name="name">text_view</property>
+                        <property name="wrap-mode">3</property>
+                        <property name="accepts-tab">true</property>
+                        <property name="editable">true</property>
+                        <property name="cursor-visible">true</property>
+                        <property name="left-margin">20</property>
+                        <property name="right-margin">20</property>
+                        <property name="top-margin">550</property>
+                        <property name="bottom-margin">20</property>
+                        <property name="pixels-above-lines">50</property>
+                        <property name="pixels-below-lines">25</property>
+                        <property name="indent">0</property>
+                      </object>
+                    </child>
+                    <child type="overlay">
+                      <object class="GtkLabel" id="placeholder_label">
+                        <property name="name">placeholder_label</property>
+                        <property name="label">Start typing your text here...</property>
+                        <property name="halign">3</property>
+                        <property name="valign">3</property>
+                        <property name="margin-top">80</property>
+                        <property name="sensitive">false</property>
+                        <property name="css-classes">dim-label</property>
+                      </object>
+                    </child>
+                  </object>
+                </child>
+              </object>
+            </child>
+            <child type="overlay">
+              <object class="GtkActionBar" id="status_bar">
+                <child type="start">
+                  <object class="GtkLabel" id="file_status">
+                    <property name="name">file_status</property>
+                    <property name="label">Plain Text</property>
+                    <property name="css-classes">dim-label</property>
+                  </object>
+                </child>
+                <child type="end">
+                  <object class="GtkBox" id="stats_box">
+                    <property name="orientation">0</property>
+                    <property name="spacing">12</property>
+                    <property name="halign">2</property>
+                    <child>
+                      <object class="GtkLabel" id="char_count_label">
+                        <property name="name">char_count_label</property>
+                        <property name="label">Characters: 0</property>
+                        <property name="css-classes">dim-label</property>
+                      </object>
+                    </child>
+                    <child>
+                      <object class="GtkSeparator">
+                        <property name="orientation">1</property>
+                      </object>
+                    </child>
+                    <child>
+                      <object class="GtkLabel" id="word_count_label">
+                        <property name="name">word_count_label</property>
+                        <property name="label">Words: 0</property>
+                        <property name="css-classes">dim-label</property>
+                      </object>
+                    </child>
+                  </object>
+                </child>
+              </object>
+            </child>
+          </object>
+        </child>
+        <child type="overlay">
           <object class="GtkHeaderBar" id="header_bar">
-            <property name="css-classes">flat</property>
+            <property name="halign">0</property>
+            <property name="valign">1</property>
+            <property name="css-classes">flat
+floating</property>
             <property name="title-widget">
               <object class="GtkLabel" id="title_label">
                 <property name="name">title_label</property>
@@ -57,82 +142,6 @@ corresponding .blp file and regenerate this file with blueprint-compiler.
                 <property name="icon-name">system-search-symbolic</property>
                 <property name="tooltip-text">Find (Ctrl+F)</property>
                 <property name="css-classes">flat</property>
-              </object>
-            </child>
-          </object>
-        </child>
-        <child>
-          <object class="GtkScrolledWindow" id="scrolled_window">
-            <property name="name">scrolled_window</property>
-            <property name="hexpand">true</property>
-            <property name="vexpand">true</property>
-            <property name="hscrollbar-policy">1</property>
-            <property name="vscrollbar-policy">1</property>
-            <property name="has-frame">false</property>
-            <child>
-              <object class="GtkOverlay" id="text_overlay">
-                <child>
-                  <object class="GtkTextView" id="text_view">
-                    <property name="name">text_view</property>
-                    <property name="wrap-mode">3</property>
-                    <property name="accepts-tab">true</property>
-                    <property name="editable">true</property>
-                    <property name="cursor-visible">true</property>
-                    <property name="left-margin">20</property>
-                    <property name="right-margin">20</property>
-                    <property name="top-margin">20</property>
-                    <property name="bottom-margin">20</property>
-                  </object>
-                </child>
-                <child type="overlay">
-                  <object class="GtkLabel" id="placeholder_label">
-                    <property name="name">placeholder_label</property>
-                    <property name="label">Start typing your text here...</property>
-                    <property name="halign">1</property>
-                    <property name="valign">1</property>
-                    <property name="margin-start">32</property>
-                    <property name="margin-top">32</property>
-                    <property name="sensitive">false</property>
-                    <property name="css-classes">dim-label</property>
-                  </object>
-                </child>
-              </object>
-            </child>
-          </object>
-        </child>
-        <child>
-          <object class="GtkActionBar" id="status_bar">
-            <child type="start">
-              <object class="GtkLabel" id="file_status">
-                <property name="name">file_status</property>
-                <property name="label">Plain Text</property>
-                <property name="css-classes">dim-label</property>
-              </object>
-            </child>
-            <child type="end">
-              <object class="GtkBox" id="stats_box">
-                <property name="orientation">0</property>
-                <property name="spacing">12</property>
-                <property name="halign">2</property>
-                <child>
-                  <object class="GtkLabel" id="char_count_label">
-                    <property name="name">char_count_label</property>
-                    <property name="label">Characters: 0</property>
-                    <property name="css-classes">dim-label</property>
-                  </object>
-                </child>
-                <child>
-                  <object class="GtkSeparator">
-                    <property name="orientation">1</property>
-                  </object>
-                </child>
-                <child>
-                  <object class="GtkLabel" id="word_count_label">
-                    <property name="name">word_count_label</property>
-                    <property name="label">Words: 0</property>
-                    <property name="css-classes">dim-label</property>
-                  </object>
-                </child>
               </object>
             </child>
           </object>
