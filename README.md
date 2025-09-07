@@ -1,5 +1,5 @@
 > [!NOTE]
-## To run 
+> ## To run 
 ```
 just run 
 ```
