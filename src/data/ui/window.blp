@@ -68,6 +68,26 @@ Adw.ApplicationWindow main_window {
                                 margin-end: 6;
 
                                 Gtk.Image {
+                                    icon-name: "accessories-text-editor-symbolic";
+                                    pixel-size: 16;
+                                }
+
+                                Gtk.Label {
+                                    label: "Text Editor";
+                                    css-classes: ["menu-item"];
+                                }
+                            };
+                        }
+
+                        Gtk.ListBoxRow {
+                            child: Gtk.Box {
+                                spacing: 6;
+                                margin-top: 6;
+                                margin-bottom: 6;
+                                margin-start: 6;
+                                margin-end: 6;
+
+                                Gtk.Image {
                                     icon-name: "dialog-password-symbolic";
                                     pixel-size: 16;
                                 }
@@ -197,41 +217,247 @@ Adw.ApplicationWindow main_window {
             }
         }
 
-        // Main content area
-        Gtk.Box content_area {
-            orientation: vertical;
+        // Main content area with stack for different views
+        Gtk.Stack content_stack {
+            name: "content_stack";
             hexpand: true;
             vexpand: true;
-            css-classes: ["content"];
 
-            Gtk.Box central_box {
-                vexpand: true;
-                valign: center;
-                halign: center;
+            // Default home page
+            Gtk.StackPage {
+                name: "home";
+                child: Gtk.Box {
+                    orientation: vertical;
+                    hexpand: true;
+                    vexpand: true;
+                    css-classes: ["content"];
 
-                Gtk.Image {
-                    icon-name: "parabolic-download-symbolic"; // Placeholder icon name; replace with actual icon
-                    pixel-size: 128;
-                    css-classes: ["download-icon"];
-                }
+                    Gtk.Box central_box {
+                        vexpand: true;
+                        valign: center;
+                        halign: center;
+                        orientation: vertical;
+                        spacing: 12;
 
-                Gtk.Label {
-                    label: "Download Media";
-                    css-classes: ["subtitle"];
-                }
+                        Gtk.Image {
+                            icon-name: "parabolic-download-symbolic";
+                            pixel-size: 128;
+                            css-classes: ["download-icon"];
+                        }
 
-                Gtk.Label {
-                    label: "Add a video, audio, or playlist URL to start downloading";
-                    css-classes: ["description"];
-                }
+                        Gtk.Label {
+                            label: "Download Media";
+                            css-classes: ["subtitle"];
+                        }
+
+                        Gtk.Label {
+                            label: "Add a video, audio, or playlist URL to start downloading";
+                            css-classes: ["description"];
+                        }
+
+                        Gtk.Button add_download_button {
+                            label: "Add Download";
+                            css-classes: ["add-button"];
+                            halign: center;
+                            margin-top: 24;
+                        }
+                    }
+                };
             }
 
-            [overlay]
-            Gtk.Button add_download_button {
-                label: "Add Download";
-                css-classes: ["add-button"];
-                halign: center;
-                margin-bottom: 24;
+            // Text Editor page
+            Gtk.StackPage {
+                name: "text_editor";
+                child: Gtk.Box text_editor_container {
+                    orientation: vertical;
+                    hexpand: true;
+                    vexpand: true;
+                    
+                    // Use Overlay to allow header bar to float over content
+                    Overlay main_overlay {
+                        // Main content area (full screen)
+                        Box content_box {
+                            orientation: vertical;
+                            hexpand: true;
+                            vexpand: true;
+                            
+                            // Main text editing area with full coverage
+                            ScrolledWindow scrolled_window {
+                                name: "scrolled_window";
+                                hexpand: true;
+                                vexpand: true;
+                                hscrollbar-policy: automatic;
+                                vscrollbar-policy: automatic;
+                                has-frame: false;
+                                
+                                Overlay text_overlay {
+                                    TextView text_view {
+                                        name: "text_view";
+                                        wrap-mode: word_char;
+                                        accepts-tab: true;
+                                        editable: true;
+                                        cursor-visible: true;
+                                        left-margin: 20;
+                                        right-margin: 20;
+                                        top-margin: 80;
+                                        bottom-margin: 20;
+                                        
+                                        pixels-above-lines: 50;
+                                        pixels-below-lines: 25;
+                                        indent: 0;
+                                    }
+                                    
+                                    [overlay]
+                                    Label placeholder_label {
+                                        name: "placeholder_label";
+                                        label: "Start typing your text here...";
+                                        halign: center;
+                                        valign: center;
+                                        margin-top: 40;
+                                        sensitive: false;
+                                        css-classes: ["dim-label"];
+                                    }
+                                }
+                            }
+                        }
+                        
+                        // Floating header bar overlay
+                        [overlay]
+                        Gtk.HeaderBar header_bar {
+                            halign: fill;
+                            valign: start;
+                            css-classes: ["flat", "floating", "compact"];
+                            
+                            title-widget: Gtk.Label title_label {
+                                name: "title_label";
+                                label: "Text Editors";
+                                css-classes: ["title"];
+                            };
+                            
+                            [start]
+                            Button open_button {
+                                name: "open_button";
+                                label: "Open";
+                                tooltip-text: "Open file (Ctrl+O)";
+                                css-classes: ["flat"];
+                            }
+                            
+                            [start]
+                            Button save_button {
+                                name: "save_button";
+                                label: "Save";
+                                tooltip-text: "Save file (Ctrl+S)";
+                                css-classes: ["flat"];
+                            }
+                            
+                            [end]
+                            Button clear_button {
+                                name: "clear_button";
+                                icon-name: "edit-clear-all-symbolic";
+                                tooltip-text: "Clear all text";
+                                css-classes: ["flat"];
+                            }
+                            
+                            [end]
+                            ToggleButton search_button {
+                                name: "search_button";
+                                icon-name: "system-search-symbolic";
+                                tooltip-text: "Find (Ctrl+F)";
+                                css-classes: ["flat"];
+                            }
+                        }
+                        
+                        // Clean status bar at bottom
+                        [overlay]
+                        ActionBar status_bar {
+                            halign: fill;
+                            valign: end;
+                            css-classes: ["flat"];
+                            
+                            [start]
+                            Label file_status {
+                                name: "file_status";
+                                label: "Plain Text";
+                                css-classes: ["dim-label"];
+                            }
+                            
+                            [end]
+                            Box stats_box {
+                                orientation: horizontal;
+                                spacing: 12;
+                                halign: end;
+                                
+                                Label char_count_label {
+                                    name: "char_count_label";
+                                    label: "Characters: 0";
+                                    css-classes: ["dim-label"];
+                                }
+                                
+                                Separator {
+                                    orientation: vertical;
+                                }
+                                
+                                Label word_count_label {
+                                    name: "word_count_label";
+                                    label: "Words: 0";
+                                    css-classes: ["dim-label"];
+                                }
+                            }
+                        }
+                    }
+                };
+            }
+
+            // Keyring page placeholder
+            Gtk.StackPage {
+                name: "keyring";
+                child: Gtk.Box {
+                    orientation: vertical;
+                    valign: center;
+                    halign: center;
+                    spacing: 12;
+
+                    Gtk.Image {
+                        icon-name: "dialog-password-symbolic";
+                        pixel-size: 64;
+                    }
+
+                    Gtk.Label {
+                        label: "Keyring Management";
+                        css-classes: ["subtitle"];
+                    }
+
+                    Gtk.Label {
+                        label: "Manage your stored passwords and keys";
+                        css-classes: ["description"];
+                    }
+                };
+            }
+
+            // History page placeholder
+            Gtk.StackPage {
+                name: "history";
+                child: Gtk.Box {
+                    orientation: vertical;
+                    valign: center;
+                    halign: center;
+                    spacing: 12;
+
+                    Gtk.Image {
+                        icon-name: "view-history-symbolic";
+                        pixel-size: 64;
+                    }
+
+                    Gtk.Label {
+                        label: "Download History";
+                        css-classes: ["subtitle"];
+                    }
+
+                    Gtk.Label {
+                        label: "View your previous downloads";
+                        css-classes: ["description"];
+                    }
+                };
             }
         }
     }

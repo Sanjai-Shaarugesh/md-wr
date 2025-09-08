@@ -5,173 +5,75 @@ template $CustomTextView : Gtk.Widget {
         orientation: vertical;
     };
     
-    // Main horizontal container for sidebar and content
-    Box main_container {
-        orientation: horizontal;
-        hexpand: true;
-        vexpand: true;
+    Gtk.HeaderBar header_bar {
+        halign: fill;
+        valign: start;
+        css-classes: ["flat", "floating"];
         
-        // Sidebar
-        ListBox sidebar {
-            name: "sidebar";
-            width-request: 250;
-            css-classes: ["sidebar"];
-            
-            ListBoxRow {
-                selectable: false;
-                child: Box {
-                    orientation: vertical;
-                    spacing: 12;
-                    margin-top: 20;
-                    margin-bottom: 12;
-                    margin-start: 16;
-                    margin-end: 16;
-                    
-                    // App title
-                    Label {
-                        label: "Text Editor";
-                        css-classes: ["sidebar-title"];
-                        halign: start;
-                    }
-                    
-                    // Menu items
-                    ListBox menu_list {
-                        selection-mode: none;
-                        css-classes: ["navigation-sidebar"];
-                        
-                        ListBoxRow {
-                            child: Box {
-                                spacing: 8;
-                                margin-top: 8;
-                                margin-bottom: 8;
-                                margin-start: 8;
-                                margin-end: 8;
-                                
-                                Image {
-                                    icon-name: "document-new-symbolic";
-                                    pixel-size: 16;
-                                }
-                                
-                                Label {
-                                    label: "New Document";
-                                    css-classes: ["menu-item"];
-                                }
-                            };
-                        }
-                        
-                        ListBoxRow {
-                            child: Box {
-                                spacing: 8;
-                                margin-top: 8;
-                                margin-bottom: 8;
-                                margin-start: 8;
-                                margin-end: 8;
-                                
-                                Image {
-                                    icon-name: "document-open-symbolic";
-                                    pixel-size: 16;
-                                }
-                                
-                                Label {
-                                    label: "Recent Files";
-                                    css-classes: ["menu-item"];
-                                }
-                            };
-                        }
-                        
-                        ListBoxRow {
-                            child: Box {
-                                spacing: 8;
-                                margin-top: 8;
-                                margin-bottom: 8;
-                                margin-start: 8;
-                                margin-end: 8;
-                                
-                                Image {
-                                    icon-name: "folder-symbolic";
-                                    pixel-size: 16;
-                                }
-                                
-                                Label {
-                                    label: "Browse Files";
-                                    css-classes: ["menu-item"];
-                                }
-                            };
-                        }
-                        
-                        // Section separator
-                        ListBoxRow {
-                            child: Box {
-                                spacing: 8;
-                                margin-top: 20;
-                                margin-bottom: 8;
-                                margin-start: 8;
-                                margin-end: 8;
-                                css-classes: ["section-separator"];
-                                
-                                Label {
-                                    label: "Tools";
-                                    css-classes: ["section-title"];
-                                    halign: start;
-                                }
-                            };
-                        }
-                        
-                        ListBoxRow {
-                            child: Box {
-                                spacing: 8;
-                                margin-top: 8;
-                                margin-bottom: 8;
-                                margin-start: 8;
-                                margin-end: 8;
-                                
-                                Image {
-                                    icon-name: "system-search-symbolic";
-                                    pixel-size: 16;
-                                }
-                                
-                                Label {
-                                    label: "Find & Replace";
-                                    css-classes: ["menu-item"];
-                                }
-                            };
-                        }
-                        
-                        ListBoxRow {
-                            child: Box {
-                                spacing: 8;
-                                margin-top: 8;
-                                margin-bottom: 8;
-                                margin-start: 8;
-                                margin-end: 8;
-                                
-                                Image {
-                                    icon-name: "preferences-system-symbolic";
-                                    pixel-size: 16;
-                                }
-                                
-                                Label {
-                                    label: "Preferences";
-                                    css-classes: ["menu-item"];
-                                }
-                            };
-                        }
-                    }
-                };
-            }
+        title-widget: Gtk.Label title_label {
+            name: "title_label";
+            label: "Text Editor";
+            css-classes: ["title"];
+        };
+        
+        [start]
+        ToggleButton nav_toggle {
+            name: "nav_toggle";
+            icon-name: "sidebar-show-right-symbolic";
+            tooltip-text: "Toggle Navigation Panel";
+            css-classes: ["flat"];
         }
         
-        // Content area with overlay for header bar
-        Overlay content_overlay {
+        [start]
+        Button open_button {
+            name: "open_button";
+            label: "Open";
+            tooltip-text: "Open file (Ctrl+O)";
+            css-classes: ["flat"];
+        }
+        
+        [start]
+        Button save_button {
+            name: "save_button";
+            label: "Save";
+            tooltip-text: "Save file (Ctrl+S)";
+            css-classes: ["flat"];
+        }
+        
+        [end]
+        Button clear_button {
+            name: "clear_button";
+            icon-name: "edit-clear-all-symbolic";
+            tooltip-text: "Clear all text";
+            css-classes: ["flat"];
+        }
+        
+        [end]
+        ToggleButton search_button {
+            name: "search_button";
+            icon-name: "system-search-symbolic";
+            tooltip-text: "Find (Ctrl+F)";
+            css-classes: ["flat"];
+        }
+    }
+    
+    // Use Overlay to allow header bar to float over content
+    Overlay main_overlay {
+        // Main content area with navigation panel
+        Paned main_paned {
+            name: "main_paned";
+            orientation: horizontal;
+            position: 250;
+            resize-end-child: false;
+            shrink-end-child: false;
             hexpand: true;
             vexpand: true;
             
-            // Main content area
+            // Main text editing area (Start Child)
             Box content_box {
                 orientation: vertical;
                 hexpand: true;
                 vexpand: true;
-                css-classes: ["content-area"];
                 
                 // Main text editing area with full coverage
                 ScrolledWindow scrolled_window {
@@ -181,7 +83,6 @@ template $CustomTextView : Gtk.Widget {
                     hscrollbar-policy: automatic;
                     vscrollbar-policy: automatic;
                     has-frame: false;
-                    margin-top: 60; // Space for floating header
                     
                     Overlay text_overlay {
                         TextView text_view {
@@ -192,9 +93,8 @@ template $CustomTextView : Gtk.Widget {
                             cursor-visible: true;
                             left-margin: 20;
                             right-margin: 20;
-                            top-margin: 20;
+                            top-margin: 80; // Adjusted for header
                             bottom-margin: 20;
-                            
                             pixels-above-lines: 8;
                             pixels-below-lines: 4;
                             indent: 0;
@@ -206,18 +106,26 @@ template $CustomTextView : Gtk.Widget {
                             label: "Start typing your text here...";
                             halign: center;
                             valign: center;
+                            margin-top: 80; // Position placeholder below header
                             sensitive: false;
                             css-classes: ["dim-label"];
                         }
                     }
                 }
                 
-                // Status bar at bottom
+                // Clean status bar at bottom
                 ActionBar status_bar {
                     [start]
                     Label file_status {
                         name: "file_status";
-                        label: "Plain Text • Untitled";
+                        label: "Plain Text";
+                        css-classes: ["dim-label"];
+                    }
+                    
+                    [center]
+                    Label nav_status {
+                        name: "nav_status";
+                        label: "";
                         css-classes: ["dim-label"];
                     }
                     
@@ -246,67 +154,14 @@ template $CustomTextView : Gtk.Widget {
                 }
             }
             
-            // Floating header bar overlay (positioned over content area only)
-            [overlay]
-            HeaderBar header_bar {
-                name: "header_bar";
-                halign: fill;
-                valign: start;
-                css-classes: ["flat", "floating-header"];
+            // Navigation Panel (End Child - Right Side)
+            Revealer nav_revealer {
+                name: "nav_revealer";
+                reveal-child: false;
+                transition-type: slide_left;
+                transition-duration: 200;
                 
-                title-widget: Label title_label {
-                    name: "title_label";
-                    label: "Untitled Document";
-                    css-classes: ["title"];
-                };
-                
-                [start]
-                Button open_button {
-                    name: "open_button";
-                    label: "Open";
-                    tooltip-text: "Open file (Ctrl+O)";
-                    css-classes: ["flat"];
-                }
-                
-                [start]
-                Button save_button {
-                    name: "save_button";
-                    label: "Save";
-                    tooltip-text: "Save file (Ctrl+S)";
-                    css-classes: ["flat"];
-                }
-                
-                [start]
-                Button save_as_button {
-                    name: "save_as_button";
-                    label: "Save As";
-                    tooltip-text: "Save file as (Ctrl+Shift+S)";
-                    css-classes: ["flat"];
-                }
-                
-                [end]
-                Button clear_button {
-                    name: "clear_button";
-                    icon-name: "edit-clear-all-symbolic";
-                    tooltip-text: "Clear all text";
-                    css-classes: ["flat"];
-                }
-                
-                [end]
-                ToggleButton search_button {
-                    name: "search_button";
-                    icon-name: "system-search-symbolic";
-                    tooltip-text: "Find (Ctrl+F)";
-                    css-classes: ["flat"];
-                }
-                
-                [end]
-                MenuButton menu_button {
-                    name: "menu_button";
-                    icon-name: "open-menu-symbolic";
-                    tooltip-text: "Menu";
-                    css-classes: ["flat"];
-                }
+               
             }
         }
     }

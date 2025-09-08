@@ -3,5 +3,6 @@
   <gresource prefix="/org/md-wr/com">
      <file>window.ui</file>
      <file>text-editor.ui</file>
+     <file>gschemas.compiled</file>
   </gresource>
 </gresources>

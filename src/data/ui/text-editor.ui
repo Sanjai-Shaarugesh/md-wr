@@ -13,193 +13,69 @@ corresponding .blp file and regenerate this file with blueprint-compiler.
       </object>
     </property>
     <child>
-      <object class="GtkBox" id="main_container">
-        <property name="orientation">0</property>
-        <property name="hexpand">true</property>
-        <property name="vexpand">true</property>
-        <child>
-          <object class="GtkListBox" id="sidebar">
-            <property name="name">sidebar</property>
-            <property name="width-request">250</property>
-            <property name="css-classes">sidebar</property>
-            <child>
-              <object class="GtkListBoxRow">
-                <property name="selectable">false</property>
-                <property name="child">
-                  <object class="GtkBox">
-                    <property name="orientation">1</property>
-                    <property name="spacing">12</property>
-                    <property name="margin-top">20</property>
-                    <property name="margin-bottom">12</property>
-                    <property name="margin-start">16</property>
-                    <property name="margin-end">16</property>
-                    <child>
-                      <object class="GtkLabel">
-                        <property name="label">Text Editor</property>
-                        <property name="css-classes">sidebar-title</property>
-                        <property name="halign">1</property>
-                      </object>
-                    </child>
-                    <child>
-                      <object class="GtkListBox" id="menu_list">
-                        <property name="selection-mode">0</property>
-                        <property name="css-classes">navigation-sidebar</property>
-                        <child>
-                          <object class="GtkListBoxRow">
-                            <property name="child">
-                              <object class="GtkBox">
-                                <property name="spacing">8</property>
-                                <property name="margin-top">8</property>
-                                <property name="margin-bottom">8</property>
-                                <property name="margin-start">8</property>
-                                <property name="margin-end">8</property>
-                                <child>
-                                  <object class="GtkImage">
-                                    <property name="icon-name">document-new-symbolic</property>
-                                    <property name="pixel-size">16</property>
-                                  </object>
-                                </child>
-                                <child>
-                                  <object class="GtkLabel">
-                                    <property name="label">New Document</property>
-                                    <property name="css-classes">menu-item</property>
-                                  </object>
-                                </child>
-                              </object>
-                            </property>
-                          </object>
-                        </child>
-                        <child>
-                          <object class="GtkListBoxRow">
-                            <property name="child">
-                              <object class="GtkBox">
-                                <property name="spacing">8</property>
-                                <property name="margin-top">8</property>
-                                <property name="margin-bottom">8</property>
-                                <property name="margin-start">8</property>
-                                <property name="margin-end">8</property>
-                                <child>
-                                  <object class="GtkImage">
-                                    <property name="icon-name">document-open-symbolic</property>
-                                    <property name="pixel-size">16</property>
-                                  </object>
-                                </child>
-                                <child>
-                                  <object class="GtkLabel">
-                                    <property name="label">Recent Files</property>
-                                    <property name="css-classes">menu-item</property>
-                                  </object>
-                                </child>
-                              </object>
-                            </property>
-                          </object>
-                        </child>
-                        <child>
-                          <object class="GtkListBoxRow">
-                            <property name="child">
-                              <object class="GtkBox">
-                                <property name="spacing">8</property>
-                                <property name="margin-top">8</property>
-                                <property name="margin-bottom">8</property>
-                                <property name="margin-start">8</property>
-                                <property name="margin-end">8</property>
-                                <child>
-                                  <object class="GtkImage">
-                                    <property name="icon-name">folder-symbolic</property>
-                                    <property name="pixel-size">16</property>
-                                  </object>
-                                </child>
-                                <child>
-                                  <object class="GtkLabel">
-                                    <property name="label">Browse Files</property>
-                                    <property name="css-classes">menu-item</property>
-                                  </object>
-                                </child>
-                              </object>
-                            </property>
-                          </object>
-                        </child>
-                        <child>
-                          <object class="GtkListBoxRow">
-                            <property name="child">
-                              <object class="GtkBox">
-                                <property name="spacing">8</property>
-                                <property name="margin-top">20</property>
-                                <property name="margin-bottom">8</property>
-                                <property name="margin-start">8</property>
-                                <property name="margin-end">8</property>
-                                <property name="css-classes">section-separator</property>
-                                <child>
-                                  <object class="GtkLabel">
-                                    <property name="label">Tools</property>
-                                    <property name="css-classes">section-title</property>
-                                    <property name="halign">1</property>
-                                  </object>
-                                </child>
-                              </object>
-                            </property>
-                          </object>
-                        </child>
-                        <child>
-                          <object class="GtkListBoxRow">
-                            <property name="child">
-                              <object class="GtkBox">
-                                <property name="spacing">8</property>
-                                <property name="margin-top">8</property>
-                                <property name="margin-bottom">8</property>
-                                <property name="margin-start">8</property>
-                                <property name="margin-end">8</property>
-                                <child>
-                                  <object class="GtkImage">
-                                    <property name="icon-name">system-search-symbolic</property>
-                                    <property name="pixel-size">16</property>
-                                  </object>
-                                </child>
-                                <child>
-                                  <object class="GtkLabel">
-                                    <property name="label">Find &amp; Replace</property>
-                                    <property name="css-classes">menu-item</property>
-                                  </object>
-                                </child>
-                              </object>
-                            </property>
-                          </object>
-                        </child>
-                        <child>
-                          <object class="GtkListBoxRow">
-                            <property name="child">
-                              <object class="GtkBox">
-                                <property name="spacing">8</property>
-                                <property name="margin-top">8</property>
-                                <property name="margin-bottom">8</property>
-                                <property name="margin-start">8</property>
-                                <property name="margin-end">8</property>
-                                <child>
-                                  <object class="GtkImage">
-                                    <property name="icon-name">preferences-system-symbolic</property>
-                                    <property name="pixel-size">16</property>
-                                  </object>
-                                </child>
-                                <child>
-                                  <object class="GtkLabel">
-                                    <property name="label">Preferences</property>
-                                    <property name="css-classes">menu-item</property>
-                                  </object>
-                                </child>
-                              </object>
-                            </property>
-                          </object>
-                        </child>
-                      </object>
-                    </child>
-                  </object>
-                </property>
-              </object>
-            </child>
+      <object class="GtkHeaderBar" id="header_bar">
+        <property name="halign">0</property>
+        <property name="valign">1</property>
+        <property name="css-classes">flat
+floating</property>
+        <property name="title-widget">
+          <object class="GtkLabel" id="title_label">
+            <property name="name">title_label</property>
+            <property name="label">Text Editor</property>
+            <property name="css-classes">title</property>
+          </object>
+        </property>
+        <child type="start">
+          <object class="GtkToggleButton" id="nav_toggle">
+            <property name="name">nav_toggle</property>
+            <property name="icon-name">sidebar-show-right-symbolic</property>
+            <property name="tooltip-text">Toggle Navigation Panel</property>
+            <property name="css-classes">flat</property>
           </object>
         </child>
+        <child type="start">
+          <object class="GtkButton" id="open_button">
+            <property name="name">open_button</property>
+            <property name="label">Open</property>
+            <property name="tooltip-text">Open file (Ctrl+O)</property>
+            <property name="css-classes">flat</property>
+          </object>
+        </child>
+        <child type="start">
+          <object class="GtkButton" id="save_button">
+            <property name="name">save_button</property>
+            <property name="label">Save</property>
+            <property name="tooltip-text">Save file (Ctrl+S)</property>
+            <property name="css-classes">flat</property>
+          </object>
+        </child>
+        <child type="end">
+          <object class="GtkButton" id="clear_button">
+            <property name="name">clear_button</property>
+            <property name="icon-name">edit-clear-all-symbolic</property>
+            <property name="tooltip-text">Clear all text</property>
+            <property name="css-classes">flat</property>
+          </object>
+        </child>
+        <child type="end">
+          <object class="GtkToggleButton" id="search_button">
+            <property name="name">search_button</property>
+            <property name="icon-name">system-search-symbolic</property>
+            <property name="tooltip-text">Find (Ctrl+F)</property>
+            <property name="css-classes">flat</property>
+          </object>
+        </child>
+      </object>
+    </child>
+    <child>
+      <object class="GtkOverlay" id="main_overlay">
         <child>
-          <object class="GtkOverlay" id="content_overlay">
+          <object class="GtkPaned" id="main_paned">
+            <property name="name">main_paned</property>
+            <property name="orientation">0</property>
+            <property name="position">250</property>
+            <property name="resize-end-child">false</property>
+            <property name="shrink-end-child">false</property>
             <property name="hexpand">true</property>
             <property name="vexpand">true</property>
             <child>
@@ -207,7 +83,6 @@ corresponding .blp file and regenerate this file with blueprint-compiler.
                 <property name="orientation">1</property>
                 <property name="hexpand">true</property>
                 <property name="vexpand">true</property>
-                <property name="css-classes">content-area</property>
                 <child>
                   <object class="GtkScrolledWindow" id="scrolled_window">
                     <property name="name">scrolled_window</property>
@@ -216,7 +91,6 @@ corresponding .blp file and regenerate this file with blueprint-compiler.
                     <property name="hscrollbar-policy">1</property>
                     <property name="vscrollbar-policy">1</property>
                     <property name="has-frame">false</property>
-                    <property name="margin-top">60</property>
                     <child>
                       <object class="GtkOverlay" id="text_overlay">
                         <child>
@@ -228,7 +102,7 @@ corresponding .blp file and regenerate this file with blueprint-compiler.
                             <property name="cursor-visible">true</property>
                             <property name="left-margin">20</property>
                             <property name="right-margin">20</property>
-                            <property name="top-margin">20</property>
+                            <property name="top-margin">80</property>
                             <property name="bottom-margin">20</property>
                             <property name="pixels-above-lines">8</property>
                             <property name="pixels-below-lines">4</property>
@@ -241,6 +115,7 @@ corresponding .blp file and regenerate this file with blueprint-compiler.
                             <property name="label">Start typing your text here...</property>
                             <property name="halign">3</property>
                             <property name="valign">3</property>
+                            <property name="margin-top">80</property>
                             <property name="sensitive">false</property>
                             <property name="css-classes">dim-label</property>
                           </object>
@@ -254,7 +129,14 @@ corresponding .blp file and regenerate this file with blueprint-compiler.
                     <child type="start">
                       <object class="GtkLabel" id="file_status">
                         <property name="name">file_status</property>
-                        <property name="label">Plain Text • Untitled</property>
+                        <property name="label">Plain Text</property>
+                        <property name="css-classes">dim-label</property>
+                      </object>
+                    </child>
+                    <child type="center">
+                      <object class="GtkLabel" id="nav_status">
+                        <property name="name">nav_status</property>
+                        <property name="label"></property>
                         <property name="css-classes">dim-label</property>
                       </object>
                     </child>
@@ -288,68 +170,12 @@ corresponding .blp file and regenerate this file with blueprint-compiler.
                 </child>
               </object>
             </child>
-            <child type="overlay">
-              <object class="GtkHeaderBar" id="header_bar">
-                <property name="name">header_bar</property>
-                <property name="halign">0</property>
-                <property name="valign">1</property>
-                <property name="css-classes">flat
-floating-header</property>
-                <property name="title-widget">
-                  <object class="GtkLabel" id="title_label">
-                    <property name="name">title_label</property>
-                    <property name="label">Untitled Document</property>
-                    <property name="css-classes">title</property>
-                  </object>
-                </property>
-                <child type="start">
-                  <object class="GtkButton" id="open_button">
-                    <property name="name">open_button</property>
-                    <property name="label">Open</property>
-                    <property name="tooltip-text">Open file (Ctrl+O)</property>
-                    <property name="css-classes">flat</property>
-                  </object>
-                </child>
-                <child type="start">
-                  <object class="GtkButton" id="save_button">
-                    <property name="name">save_button</property>
-                    <property name="label">Save</property>
-                    <property name="tooltip-text">Save file (Ctrl+S)</property>
-                    <property name="css-classes">flat</property>
-                  </object>
-                </child>
-                <child type="start">
-                  <object class="GtkButton" id="save_as_button">
-                    <property name="name">save_as_button</property>
-                    <property name="label">Save As</property>
-                    <property name="tooltip-text">Save file as (Ctrl+Shift+S)</property>
-                    <property name="css-classes">flat</property>
-                  </object>
-                </child>
-                <child type="end">
-                  <object class="GtkButton" id="clear_button">
-                    <property name="name">clear_button</property>
-                    <property name="icon-name">edit-clear-all-symbolic</property>
-                    <property name="tooltip-text">Clear all text</property>
-                    <property name="css-classes">flat</property>
-                  </object>
-                </child>
-                <child type="end">
-                  <object class="GtkToggleButton" id="search_button">
-                    <property name="name">search_button</property>
-                    <property name="icon-name">system-search-symbolic</property>
-                    <property name="tooltip-text">Find (Ctrl+F)</property>
-                    <property name="css-classes">flat</property>
-                  </object>
-                </child>
-                <child type="end">
-                  <object class="GtkMenuButton" id="menu_button">
-                    <property name="name">menu_button</property>
-                    <property name="icon-name">open-menu-symbolic</property>
-                    <property name="tooltip-text">Menu</property>
-                    <property name="css-classes">flat</property>
-                  </object>
-                </child>
+            <child>
+              <object class="GtkRevealer" id="nav_revealer">
+                <property name="name">nav_revealer</property>
+                <property name="reveal-child">false</property>
+                <property name="transition-type">3</property>
+                <property name="transition-duration">200</property>
               </object>
             </child>
           </object>

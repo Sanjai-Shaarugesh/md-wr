@@ -4,6 +4,9 @@ use adw::prelude::*;
 use adw::subclass::prelude::*;
 use gtk::{CompositeTemplate, TemplateChild};
 use gio::Settings;
+use std::path::PathBuf;
+use std::fs;
+use std::time::Duration;
 
 #[derive(CompositeTemplate)]
 #[template(resource = "/org/md-wr/com/text-editor.ui")]
@@ -32,29 +35,55 @@ pub struct CustomTextView {
     #[template_child]
     pub title_label: TemplateChild<gtk::Label>,
     
-    settings: Settings,
+    // Navigation panel components
+    #[template_child]
+    pub nav_toggle: TemplateChild<gtk::ToggleButton>,
+    
+    #[template_child]
+    pub nav_revealer: TemplateChild<gtk::Revealer>,
+    
+    #[template_child]
+    pub main_paned: TemplateChild<gtk::Paned>,
+    
+    settings: Option<Settings>,
+    config_dir: PathBuf,
     settings_key: RefCell<Option<String>>,
     auto_save: RefCell<bool>,
     is_loading: RefCell<bool>,
+    nav_visible: RefCell<bool>,
+    paned_position: RefCell<i32>,
 }
 
 impl Default for CustomTextView {
     fn default() -> Self {
-        Self {
-            scrolled_window: TemplateChild::default(),
-            text_view: TemplateChild::default(),
-            word_count_label: TemplateChild::default(),
-            char_count_label: TemplateChild::default(),
-            save_button: TemplateChild::default(),
-            clear_button: TemplateChild::default(),
-            placeholder_label: TemplateChild::default(),
-            title_label: TemplateChild::default(),
-            settings: Settings::new("org.gtk-sanjai.textview"),
-            settings_key: RefCell::new(None),
-            auto_save: RefCell::new(false),
-            is_loading: RefCell::new(false),
+            let config_dir = glib::user_config_dir().join("md-wr");
+
+            // Try to create settings, fallback to None if it fails
+            let settings = Settings::new("org.md-wr.com");
+
+            let instance = Self {
+                scrolled_window: TemplateChild::default(),
+                text_view: TemplateChild::default(),
+                word_count_label: TemplateChild::default(),
+                char_count_label: TemplateChild::default(),
+                save_button: TemplateChild::default(),
+                clear_button: TemplateChild::default(),
+                placeholder_label: TemplateChild::default(),
+                title_label: TemplateChild::default(),
+                nav_toggle: TemplateChild::default(),
+                nav_revealer: TemplateChild::default(),
+                main_paned: TemplateChild::default(),
+                settings: Some(settings),
+                config_dir,
+                settings_key: RefCell::new(None),
+                auto_save: RefCell::new(false),
+                is_loading: RefCell::new(false),
+                nav_visible: RefCell::new(false),
+                paned_position: RefCell::new(250),
+            };
+            instance.ensure_config_dir(); // Ensure config dir early
+            instance
         }
-    }
 }
 
 #[glib::object_subclass]
@@ -73,6 +102,63 @@ impl ObjectSubclass for CustomTextView {
 }
 
 impl CustomTextView {
+    fn ensure_config_dir(&self) {
+        if let Err(e) = fs::create_dir_all(&self.config_dir) {
+            eprintln!("Failed to create config directory: {}", e);
+        }
+    }
+    
+    fn get_config_value(&self, key: &str, default: &str) -> String {
+            if let Some(ref settings) = self.settings {
+                // Try to get the value, fall back to default if key doesn't exist or operation fails
+                match key {
+                    "navigation-panel-visible" => {
+                        settings.boolean("navigation-panel-visible").to_string()
+                    },
+                    "paned-position" => {
+                        settings.int("paned-position").to_string()
+                    },
+                    _ => {
+                        settings.string(key).to_string()
+                    }
+                }
+            } else {
+                let config_file = self.config_dir.join(format!("{}.txt", key));
+                fs::read_to_string(config_file).unwrap_or_else(|_| default.to_string())
+            }
+        }
+    
+        fn set_config_value(&self, key: &str, value: &str) -> Result<(), Box<dyn std::error::Error>> {
+                if let Some(ref settings) = self.settings {
+                    // Try to set the value directly, fall back to file if it fails
+                    let result = match key {
+                        "navigation-panel-visible" => {
+                            let bool_val = value.parse::<bool>()?;
+                            settings.set_boolean(key, bool_val).map_err(|e| Box::new(e) as Box<dyn std::error::Error>)
+                        }
+                        "paned-position" => {
+                            let int_val = value.parse::<i32>()?;
+                            settings.set_int(key, int_val).map_err(|e| Box::new(e) as Box<dyn std::error::Error>)
+                        }
+                        _ => {
+                            settings.set_string(key, value).map_err(|e| Box::new(e) as Box<dyn std::error::Error>)
+                        }
+                    };
+
+                    if let Err(e) = result {
+                        eprintln!("GSettings operation failed for key '{}': {}. Falling back to file", key, e);
+                        self.ensure_config_dir();
+                        let config_file = self.config_dir.join(format!("{}.txt", key));
+                        fs::write(config_file, value)?;
+                    }
+                } else {
+                    self.ensure_config_dir();
+                    let config_file = self.config_dir.join(format!("{}.txt", key));
+                    fs::write(config_file, value)?;
+                }
+                Ok(())
+            }
+    
     fn on_save_clicked(&self) {
         println!("Save button clicked!");
         let obj = self.obj();
@@ -89,6 +175,81 @@ impl CustomTextView {
             self.save_to_settings();
         }
         println!("Text cleared!");
+    }
+    
+    fn on_nav_toggle_clicked(&self) {
+            let is_active = self.nav_toggle.is_active();
+            println!("Navigation toggle clicked! Active: {}", is_active);
+
+            // Update internal state
+            *self.nav_visible.borrow_mut() = is_active;
+
+            if is_active {
+                // Show: Add child, restore position, animate in
+                self.nav_revealer.set_reveal_child(false); // Start hidden for animation
+                self.main_paned.set_end_child(Some(&*self.nav_revealer));
+                self.main_paned.set_position(*self.paned_position.borrow());
+                self.nav_revealer.set_reveal_child(true); // Trigger slide-in
+                self.nav_toggle.set_icon_name("sidebar-show-symbolic-rtl");
+                self.nav_toggle.set_tooltip_text(Some("Hide Navigation Panel"));
+            } else {
+                // Hide: Save position, animate out, then remove child after transition
+                *self.paned_position.borrow_mut() = self.main_paned.position();
+                self.nav_revealer.set_reveal_child(false); // Trigger slide-out
+                let imp_weak = self.obj().downgrade();
+                glib::timeout_add_local_once(Duration::from_millis(200), move || {
+                    if let Some(imp) = imp_weak.upgrade() {
+                        let imp = imp.imp();
+                        imp.main_paned.set_end_child(None::<&gtk::Widget>);
+                    }
+                });
+                self.nav_toggle.set_icon_name("view-dual-symbolic");
+                self.nav_toggle.set_tooltip_text(Some("Show Navigation Panel"));
+            }
+
+            // Save state
+            if let Err(e) = self.set_config_value("navigation-panel-visible", &is_active.to_string()) {
+                eprintln!("Failed to save navigation panel state: {}", e);
+            }
+            if let Err(e) = self.set_config_value("paned-position", &self.paned_position.borrow().to_string()) {
+                eprintln!("Failed to save paned position: {}", e);
+            }
+
+            println!("Navigation panel state saved: visible={}, position={}", is_active, *self.paned_position.borrow());
+        }
+    
+    pub fn load_navigation_state(&self) {
+        // Load navigation panel visibility
+        let nav_visible_str = self.get_config_value("navigation-panel-visible", "false");
+        let nav_visible = nav_visible_str.parse::<bool>().unwrap_or(false);
+        
+        *self.nav_visible.borrow_mut() = nav_visible;
+        self.nav_toggle.set_active(nav_visible);
+        
+        // Update icon based on loaded state
+        if nav_visible {
+            self.nav_toggle.set_icon_name("sidebar-show-symbolic-rtl");
+            self.nav_toggle.set_tooltip_text(Some("Hide Navigation Panel"));
+            self.nav_revealer.set_reveal_child(true);
+            self.main_paned.set_end_child(Some(&*self.nav_revealer)); // Ensure added if visible
+        } else {
+            self.nav_toggle.set_icon_name("view-dual-symbolic");
+            self.nav_toggle.set_tooltip_text(Some("Show Navigation Panel"));
+            self.nav_revealer.set_reveal_child(false);
+            // Ensure removed if hidden
+        }
+        
+        // Load paned position
+        let position_str = self.get_config_value("paned-position", "250");
+        let saved_position = position_str.parse::<i32>().unwrap_or(250);
+        if saved_position > 0 {
+            *self.paned_position.borrow_mut() = saved_position;
+            if nav_visible {
+                self.main_paned.set_position(saved_position);
+            }
+        }
+        
+        println!("Navigation state loaded: visible={}, position={}", nav_visible, saved_position);
     }
     
     pub fn clear_text(&self) {
@@ -140,7 +301,7 @@ impl CustomTextView {
             let start = buffer.start_iter();
             let end = buffer.end_iter();
             let text = buffer.text(&start, &end, false);
-            if let Err(e) = self.settings.set_string(key, &text) {
+            if let Err(e) = self.set_config_value(key, &text) {
                 eprintln!("Failed to save text to settings: {}", e);
             } else {
                 println!("Text saved to key: {}", key);
@@ -153,7 +314,7 @@ impl CustomTextView {
     pub fn load_from_settings(&self) {
         if let Some(key) = self.settings_key.borrow().as_ref() {
             *self.is_loading.borrow_mut() = true;
-            let saved_text = self.settings.string(key);
+            let saved_text = self.get_config_value(key, "");
             let buffer = self.text_view.buffer();
             buffer.set_text(&saved_text);
             self.update_counts();
@@ -218,6 +379,28 @@ impl ObjectImpl for CustomTextView {
             }
         ));
         
+        // Connect navigation toggle button
+        self.nav_toggle.connect_clicked(glib::clone!(
+            #[weak(rename_to = imp)]
+            self,
+            move |_| {
+                imp.on_nav_toggle_clicked();
+            }
+        ));
+        
+        // Connect to paned position changes to save state
+        self.main_paned.connect_position_notify(glib::clone!(
+            #[weak(rename_to = imp)]
+            self,
+            move |paned| {
+                let position = paned.position();
+                *imp.paned_position.borrow_mut() = position;
+                if let Err(e) = imp.set_config_value("paned-position", &position.to_string()) {
+                    eprintln!("Failed to save paned position: {}", e);
+                }
+            }
+        ));
+        
         // Connect buffer changed signal to update counts and auto-save
         let buffer = self.text_view.buffer();
         buffer.connect_changed(glib::clone!(
@@ -253,6 +436,9 @@ impl ObjectImpl for CustomTextView {
         ));
         self.text_view.add_controller(focus_controller);
         
+        // Load navigation state after everything is set up
+        self.load_navigation_state();
+        
         // Initial count update
         self.update_counts();
     }
@@ -261,6 +447,13 @@ impl ObjectImpl for CustomTextView {
         if *self.auto_save.borrow() {
             self.save_to_settings();
         }
+        
+        // Save final navigation state
+        let nav_visible = *self.nav_visible.borrow();
+        let position = *self.paned_position.borrow();
+        let _ = self.set_config_value("navigation-panel-visible", &nav_visible.to_string());
+        let _ = self.set_config_value("paned-position", &position.to_string());
+        
         self.scrolled_window.unparent();
     }
 }
