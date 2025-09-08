@@ -388,18 +388,7 @@ impl ObjectImpl for CustomTextView {
             }
         ));
         
-        // Connect to paned position changes to save state
-        self.main_paned.connect_position_notify(glib::clone!(
-            #[weak(rename_to = imp)]
-            self,
-            move |paned| {
-                let position = paned.position();
-                *imp.paned_position.borrow_mut() = position;
-                if let Err(e) = imp.set_config_value("paned-position", &position.to_string()) {
-                    eprintln!("Failed to save paned position: {}", e);
-                }
-            }
-        ));
+        
         
         // Connect buffer changed signal to update counts and auto-save
         let buffer = self.text_view.buffer();
