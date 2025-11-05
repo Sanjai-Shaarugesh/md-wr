@@ -19,9 +19,17 @@ build:
   script:
     - pwd
     - ls -la
-    - cat Justfile || echo "Justfile not found!"
-    - just --list || echo "just --list failed"
-    - just build
+    - echo "=== Searching for Justfile ==="
+    - find . -name "*[Jj]ust*" -type f
+    - echo "=== Which Justfile is just using? ==="
+    - just --evaluate || true
+    - echo "=== Show Justfile that just found ==="
+    - just --dump || cat justfile || echo "No justfile found"
+    - echo "=== Available recipes ==="
+    - just --list
+    - echo "=== Running build-resources then cargo build ==="
+    - just build-resources
+    - cargo build --release
   artifacts:
     paths:
       - target/release/
@@ -35,6 +43,6 @@ test:
   before_script:
     - *setup
   script:
-    - pwd
-    - ls -la
-    - just test
+    - cargo fmt -- --check
+    - cargo clippy -- -D warnings
+    - cargo test
