@@ -176,6 +176,20 @@ floating</property>
                 <property name="reveal-child">false</property>
                 <property name="transition-type">3</property>
                 <property name="transition-duration">200</property>
+                <property name="child">
+                  <object class="GtkBox" id="nav_box">
+                    <property name="orientation">1</property>
+                    <property name="hexpand">true</property>
+                    <property name="vexpand">true</property>
+                    <child>
+                      <object class="WebKitWebView" id="web_view">
+                        <property name="name">web_view</property>
+                        <property name="hexpand">true</property>
+                        <property name="vexpand">true</property>
+                      </object>
+                    </child>
+                  </object>
+                </property>
               </object>
             </child>
           </object>

@@ -15,4 +15,4 @@ markdown-ppp = "2.1.0"
 reqwest = "0.12.23"
 tokio = "1.47.1"
 uuid = "1.18.1"
-
+webkit2gtk = { version = "0.5.0", package = "webkit6", features = ["v2_44"] }

@@ -1,21 +1,21 @@
-# Compile all blueprint files to GtkBuilder XML
+# Compile all Blueprint files to GtkBuilder XML
 build-ui:
-    blueprint-compiler compile src/data/ui/window.blp > src/data/ui/window.ui
-    blueprint-compiler compile src/data/ui/text-editor.blp > src/data/ui/text-editor.ui
-    
-    
-  
+	blueprint-compiler compile src/data/ui/window.blp > src/data/ui/window.ui
+	blueprint-compiler compile src/data/ui/text-editor.blp > src/data/ui/text-editor.ui
 
-# Compile resources after building UI
-build-resources: build-ui
-    glib-compile-resources --target=resources.gresource --sourcedir=src/data/ui src/data/ui/resources.gresource.xml
-    # Compile GSettings schema
-    glib-compile-schemas src/data --targetdir=src/data/ui
+# Compile local GSettings schema without sudo
+copy: build-ui
+	mkdir -p build/schemas
+	cp src/data/org.md-wr.com.gschema.xml build/schemas/
+	glib-compile-schemas build/schemas
 
-    # Compile resources
-    glib-compile-resources --target=resources.gresource --sourcedir=src/data/ui src/data/ui/resources.gresource.xml
+# Compile resources after building UI and schemas
+build-resources: copy
+	glib-compile-resources --target=resources.gresource --sourcedir=src/data/ui src/data/ui/resources.gresource.xml
 
-# Run your Rust app (compile UI and resources first)
+# Run  app with fallback to system schemas
 run: build-resources
-    cargo build
-    cargo run
+	cargo build
+	env GSETTINGS_SCHEMA_DIR="$(pwd)/build/schemas:$(pkg-config --variable=schemasdir gio-2.0 || echo /usr/share/glib-2.0/schemas)" \
+	LD_LIBRARY_PATH="/usr/lib" \
+	cargo run

@@ -1,5 +1,7 @@
 > [!NOTE]
-> ## To run 
+> ## To run
 ```
-just run 
+just run
 ```
+
+![preview](img.png)

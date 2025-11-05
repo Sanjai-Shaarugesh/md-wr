@@ -1,7 +1,7 @@
-use gtk::prelude::*;
-use adw::{Application, ApplicationWindow};
-use gtk::{gio, glib}; // Removed unused Builder import
 use adw::prelude::*;
+use adw::{Application, ApplicationWindow};
+use gtk::prelude::*;
+use gtk::{gio, glib}; // Removed unused Builder import
 
 mod custom_textview;
 use custom_textview::CustomTextView;
@@ -14,9 +14,7 @@ fn main() {
     let resource = gio::Resource::from_data(&resource_data).expect("Failed to load resources");
     gio::resources_register(&resource);
 
-    let app = Application::builder()
-        .application_id(APP_ID)
-        .build();
+    let app = Application::builder().application_id(APP_ID).build();
 
     app.connect_activate(|app| {
         // Create window

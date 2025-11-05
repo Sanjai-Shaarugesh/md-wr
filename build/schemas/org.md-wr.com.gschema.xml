@@ -1,0 +1,17 @@
+<?xml version="1.0" encoding="UTF-8"?>
+<schemalist>
+  <schema id="org.md-wr.com" path="/org/md-wr/com/">
+    <key name="navigation-panel-visible" type="b">
+      <default>false</default>
+      <summary>Whether the navigation panel is visible</summary>
+    </key>
+    <key name="paned-position" type="i">
+      <default>250</default>
+      <summary>Position of the main paned widget</summary>
+    </key>
+    <key name="user-notes" type="s">
+      <default>""</default>
+      <summary>User notes stored in the text editor</summary>
+    </key>
+  </schema>
+</schemalist>
