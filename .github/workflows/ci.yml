@@ -16,26 +16,18 @@ jobs:
       - name: Checkout code
         uses: actions/checkout@v4
 
+      - name: Verify Justfile exists
+        run: |
+          ls -la
+          cat Justfile || echo "Justfile not found!"
+
       - name: Update system and install dependencies
         run: |
           pacman -Syu --noconfirm
-          pacman -S --noconfirm --needed base-devel gtk4 libadwaita glib2 pkgconf meson ninja python python-gobject blueprint-compiler rust cargo curl
-
-      - name: Install just
-        run: |
-          cargo install just --locked
-          export PATH="$HOME/.cargo/bin:$PATH"
-          echo "$HOME/.cargo/bin" >> $GITHUB_PATH
-
-      - name: Verify just installation
-        run: |
-          export PATH="$HOME/.cargo/bin:$PATH"
-          just --version
+          pacman -S --noconfirm --needed base-devel gtk4 libadwaita glib2 pkgconf meson ninja python python-gobject blueprint-compiler rust cargo curl just
 
       - name: Build
-        run: |
-          export PATH="$HOME/.cargo/bin:$PATH"
-          just build
+        run: just build
 
       - name: Upload artifacts
         uses: actions/upload-artifact@v4
@@ -61,15 +53,7 @@ jobs:
       - name: Update system and install dependencies
         run: |
           pacman -Syu --noconfirm
-          pacman -S --noconfirm --needed base-devel gtk4 libadwaita glib2 pkgconf meson ninja python python-gobject blueprint-compiler rust cargo curl
-
-      - name: Install just
-        run: |
-          cargo install just --locked
-          export PATH="$HOME/.cargo/bin:$PATH"
-          echo "$HOME/.cargo/bin" >> $GITHUB_PATH
+          pacman -S --noconfirm --needed base-devel gtk4 libadwaita glib2 pkgconf meson ninja python python-gobject blueprint-compiler rust cargo curl just
 
       - name: Run tests
-        run: |
-          export PATH="$HOME/.cargo/bin:$PATH"
-          just test
+        run: just test
