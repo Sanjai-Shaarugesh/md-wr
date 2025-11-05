@@ -1,18 +1,54 @@
-# You can override the included template(s) by including variable overrides
-# SAST customization: https://docs.gitlab.com/ee/user/application_security/sast/#customizing-the-sast-settings
-# Secret Detection customization: https://docs.gitlab.com/user/application_security/secret_detection/pipeline/configure
-# Dependency Scanning customization: https://docs.gitlab.com/ee/user/application_security/dependency_scanning/#customizing-the-dependency-scanning-settings
-# Container Scanning customization: https://docs.gitlab.com/ee/user/application_security/container_scanning/#customizing-the-container-scanning-settings
-# Note that environment variables can be set in several places
-# See https://docs.gitlab.com/ee/ci/variables/#cicd-variable-precedence
 stages:
-- test
-- secret-detection
-sast:
-  stage: test
-include:
-- template: Security/Secret-Detection.gitlab-ci.yml
+  - build
+  - test
+
 variables:
-  SECRET_DETECTION_ENABLED: 'true'
-secret_detection:
-  stage: secret-detection
+  CARGO_TERM_COLOR: always
+
+before_script:
+  # 🧩 Detect package manager and install system dependencies (including blueprint-compiler)
+  - |
+    if command -v apt-get >/dev/null; then
+      echo "Using apt-get..."
+      apt-get update -y
+      apt-get install -y build-essential pkg-config libgtk-4-dev libadwaita-1-dev libglib2.0-dev meson ninja-build python3-pip curl
+      pip install --break-system-packages blueprint-compiler
+    elif command -v dnf >/dev/null; then
+      echo "Using dnf..."
+      dnf install -y gtk4-devel libadwaita-devel glib2-devel meson ninja-build python3-pip gcc make pkgconf-pkg-config curl
+      pip install blueprint-compiler
+    elif command -v pacman >/dev/null; then
+      echo "Using pacman..."
+      pacman -Sy --noconfirm base-devel gtk4 libadwaita glib2 meson python-pip pkgconf curl
+      pip install blueprint-compiler
+    elif command -v apk >/dev/null; then
+      echo "Using apk..."
+      apk add --no-cache build-base gtk4.0-dev libadwaita-dev glib-dev meson py3-pip pkgconfig curl
+      pip install blueprint-compiler
+    else
+      echo "⚠️ No supported package manager found!"
+      exit 1
+    fi
+
+  # 🦀 Install Rust and Just if missing
+  - if ! command -v cargo >/dev/null; then curl https://sh.rustup.rs -sSf | sh -s -- -y; fi
+  - export PATH="$HOME/.cargo/bin:$PATH"
+  - rustup default stable
+  - cargo install just || true
+
+build:
+  stage: build
+  script:
+    - just build
+  artifacts:
+    paths:
+      - target/release/
+      - build/schemas/
+      - src/data/ui/*.ui
+      - resources.gresource
+    expire_in: 1 week
+
+test:
+  stage: test
+  script:
+    - just test
