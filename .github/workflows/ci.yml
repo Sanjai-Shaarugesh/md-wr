@@ -53,7 +53,7 @@ jobs:
       - name: Update system and install dependencies
         run: |
           pacman -Syu --noconfirm
-          pacman -S --noconfirm --needed base-devel gtk4 libadwaita glib2 pkgconf meson ninja python python-gobject blueprint-compiler rust cargo curl
+          pacman -S --noconfirm --needed base-devel gtk4 libadwaita glib2 pkgconf meson ninja python python-gobject blueprint-compiler rust cargo curl just
 
       - name: Setup Cargo
         run: |
