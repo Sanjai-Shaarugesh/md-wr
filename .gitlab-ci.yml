@@ -10,21 +10,7 @@ variables:
 
 before_script:
   - pacman -Syu --noconfirm
-  - pacman -S --noconfirm --needed \
-    base-devel \
-    gtk4 \
-    libadwaita \
-    glib2 \
-    pkgconf \
-    meson \
-    ninja \
-    python \
-    python-gobject \
-    blueprint-compiler \
-    rust \
-    cargo \
-    curl
-  # Optional: make sure cargo is on PATH and rustup is set up
+  - pacman -S --noconfirm --needed base-devel gtk4 libadwaita glib2 pkgconf meson ninja python python-gobject blueprint-compiler rust cargo curl
   - export PATH="$HOME/.cargo/bin:$PATH"
   - cargo install just --locked || true
 
