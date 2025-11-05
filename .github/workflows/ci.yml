@@ -21,10 +21,8 @@ jobs:
           pacman -Syu --noconfirm
           pacman -S --noconfirm --needed base-devel gtk4 libadwaita glib2 pkgconf meson ninja python python-gobject blueprint-compiler rust cargo curl
 
-      - name: Setup Cargo
-        run: |
-          export PATH="$HOME/.cargo/bin:$PATH"
-          cargo install just --locked || true
+      - name: Install just
+        run: cargo install just --locked
 
       - name: Build
         run: just build
@@ -53,12 +51,10 @@ jobs:
       - name: Update system and install dependencies
         run: |
           pacman -Syu --noconfirm
-          pacman -S --noconfirm --needed base-devel gtk4 libadwaita glib2 pkgconf meson ninja python python-gobject blueprint-compiler rust cargo curl just
+          pacman -S --noconfirm --needed base-devel gtk4 libadwaita glib2 pkgconf meson ninja python python-gobject blueprint-compiler rust cargo curl
 
-      - name: Setup Cargo
-        run: |
-          export PATH="$HOME/.cargo/bin:$PATH"
-          cargo install just --locked || true
+      - name: Install just
+        run: cargo install just --locked
 
       - name: Run tests
         run: just test
