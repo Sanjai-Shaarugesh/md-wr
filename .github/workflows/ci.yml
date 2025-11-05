@@ -22,10 +22,20 @@ jobs:
           pacman -S --noconfirm --needed base-devel gtk4 libadwaita glib2 pkgconf meson ninja python python-gobject blueprint-compiler rust cargo curl
 
       - name: Install just
-        run: cargo install just --locked
+        run: |
+          cargo install just --locked
+          export PATH="$HOME/.cargo/bin:$PATH"
+          echo "$HOME/.cargo/bin" >> $GITHUB_PATH
+
+      - name: Verify just installation
+        run: |
+          export PATH="$HOME/.cargo/bin:$PATH"
+          just --version
 
       - name: Build
-        run: just build
+        run: |
+          export PATH="$HOME/.cargo/bin:$PATH"
+          just build
 
       - name: Upload artifacts
         uses: actions/upload-artifact@v4
@@ -54,7 +64,12 @@ jobs:
           pacman -S --noconfirm --needed base-devel gtk4 libadwaita glib2 pkgconf meson ninja python python-gobject blueprint-compiler rust cargo curl
 
       - name: Install just
-        run: cargo install just --locked
+        run: |
+          cargo install just --locked
+          export PATH="$HOME/.cargo/bin:$PATH"
+          echo "$HOME/.cargo/bin" >> $GITHUB_PATH
 
       - name: Run tests
-        run: just test
+        run: |
+          export PATH="$HOME/.cargo/bin:$PATH"
+          just test
