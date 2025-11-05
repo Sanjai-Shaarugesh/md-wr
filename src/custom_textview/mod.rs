@@ -1,6 +1,6 @@
+use adw::prelude::*;
 use gtk::glib;
 use gtk::subclass::prelude::ObjectSubclassIsExt;
-use adw::prelude::*;
 
 mod imp;
 
@@ -15,7 +15,6 @@ impl CustomTextView {
         glib::Object::builder().build()
     }
 
-  
     /// Create a new CustomTextView with a specific settings key for auto-saving
     pub fn with_settings_key(key: &str) -> Self {
         let widget = Self::new();
@@ -44,10 +43,10 @@ impl CustomTextView {
     }
 
     pub fn clear_text(&self) {
-            let imp = self.imp();
-            let buffer = imp.text_view.buffer();
-            buffer.set_text("");
-        }
+        let imp = self.imp();
+        let buffer = imp.text_view.buffer();
+        buffer.set_text("");
+    }
 
     /// Set the settings key for saving/loading text content
     pub fn set_settings_key(&self, key: &str) {
@@ -94,7 +93,7 @@ impl CustomTextView {
     }
 
     // Navigation panel methods
-    
+
     /// Toggle the navigation panel visibility
     pub fn toggle_navigation_panel(&self) {
         let imp = self.imp();
@@ -102,7 +101,7 @@ impl CustomTextView {
         imp.nav_toggle.set_active(!current_state);
         // The signal handler will take care of the rest
     }
-    
+
     /// Show the navigation panel
     pub fn show_navigation_panel(&self) {
         let imp = self.imp();
@@ -110,7 +109,7 @@ impl CustomTextView {
             imp.nav_toggle.set_active(true);
         }
     }
-    
+
     /// Hide the navigation panel
     pub fn hide_navigation_panel(&self) {
         let imp = self.imp();
@@ -118,25 +117,25 @@ impl CustomTextView {
             imp.nav_toggle.set_active(false);
         }
     }
-    
+
     /// Check if navigation panel is visible
     pub fn is_navigation_panel_visible(&self) -> bool {
         let imp = self.imp();
         imp.nav_revealer.reveals_child()
     }
-    
+
     /// Set the paned position (distance from left edge to splitter)
     pub fn set_paned_position(&self, position: i32) {
         let imp = self.imp();
         imp.main_paned.set_position(position);
     }
-    
+
     /// Get the current paned position
     pub fn get_paned_position(&self) -> i32 {
         let imp = self.imp();
         imp.main_paned.position()
     }
-    
+
     /// Load navigation state from settings
     pub fn load_navigation_state(&self) {
         let imp = self.imp();
@@ -179,7 +178,7 @@ impl CustomTextView {
             }
         ));
     }
-    
+
     /// Connect to navigation toggle events
     pub fn connect_navigation_toggled<F: Fn(&Self, bool) + 'static>(&self, f: F) {
         let imp = self.imp();
@@ -192,7 +191,7 @@ impl CustomTextView {
             }
         ));
     }
-    
+
     /// Connect to paned position changes
     pub fn connect_paned_position_changed<F: Fn(&Self, i32) + 'static>(&self, f: F) {
         let imp = self.imp();
