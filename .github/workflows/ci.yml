@@ -1,0 +1,64 @@
+name: CI
+
+on:
+  push:
+    branches: [main, master]
+  pull_request:
+    branches: [main, master]
+
+jobs:
+  build:
+    runs-on: ubuntu-latest
+    container:
+      image: archlinux:latest
+
+    steps:
+      - name: Checkout code
+        uses: actions/checkout@v4
+
+      - name: Update system and install dependencies
+        run: |
+          pacman -Syu --noconfirm
+          pacman -S --noconfirm --needed base-devel gtk4 libadwaita glib2 pkgconf meson ninja python python-gobject blueprint-compiler rust cargo curl
+
+      - name: Setup Cargo
+        run: |
+          export PATH="$HOME/.cargo/bin:$PATH"
+          cargo install just --locked || true
+
+      - name: Build
+        run: just build
+
+      - name: Upload artifacts
+        uses: actions/upload-artifact@v4
+        with:
+          name: build-artifacts
+          path: |
+            target/release/
+            build/schemas/
+            src/data/ui/*.ui
+            resources.gresource
+          retention-days: 7
+
+  test:
+    runs-on: ubuntu-latest
+    container:
+      image: archlinux:latest
+    needs: build
+
+    steps:
+      - name: Checkout code
+        uses: actions/checkout@v4
+
+      - name: Update system and install dependencies
+        run: |
+          pacman -Syu --noconfirm
+          pacman -S --noconfirm --needed base-devel gtk4 libadwaita glib2 pkgconf meson ninja python python-gobject blueprint-compiler rust cargo curl
+
+      - name: Setup Cargo
+        run: |
+          export PATH="$HOME/.cargo/bin:$PATH"
+          cargo install just --locked || true
+
+      - name: Run tests
+        run: just test
