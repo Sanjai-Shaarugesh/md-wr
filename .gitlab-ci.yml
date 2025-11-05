@@ -10,13 +10,16 @@ variables:
 
 .setup: &setup
   - pacman -Syu --noconfirm
-  - pacman -S --noconfirm --needed base-devel gtk4 libadwaita glib2 pkgconf meson ninja python python-gobject blueprint-compiler rust cargo curl just webkit2gtk-4.1
+  - pacman -S --noconfirm --needed base-devel gtk4 libadwaita glib2 pkgconf meson ninja python python-gobject blueprint-compiler rust cargo curl just webkitgtk-6.0
 
 build:
   stage: build
   before_script:
     - *setup
   script:
+    - echo "=== Searching for WebKit GIR files ==="
+    - find /usr -name "*WebKit*.gir" -o -name "*WebKit*.typelib" 2>/dev/null || true
+    - ls -la /usr/lib/girepository-1.0/ | grep -i webkit || echo "No WebKit typelib found"
     - just build-resources
     - cargo build --release
   artifacts:
