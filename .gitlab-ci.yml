@@ -17,6 +17,10 @@ build:
   before_script:
     - *setup
   script:
+    - pwd
+    - ls -la
+    - cat Justfile || echo "Justfile not found!"
+    - just --list || echo "just --list failed"
     - just build
   artifacts:
     paths:
@@ -31,4 +35,6 @@ test:
   before_script:
     - *setup
   script:
+    - pwd
+    - ls -la
     - just test
