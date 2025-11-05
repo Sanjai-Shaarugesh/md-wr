@@ -7,10 +7,14 @@ stages:
 variables:
   CARGO_TERM_COLOR: always
   RUST_BACKTRACE: full
+  PATH: "$HOME/.cargo/bin:$PATH"
 
 before_script:
   - pacman -Syu --noconfirm
   - pacman -S --noconfirm --needed base-devel gtk4 libadwaita glib2 pkgconf meson ninja python python-gobject blueprint-compiler rust cargo curl
+  - cargo install just --locked
+  - export PATH="$HOME/.cargo/bin:$PATH"
+  - just --version
 
 build:
   stage: build
