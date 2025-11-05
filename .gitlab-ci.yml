@@ -1,4 +1,4 @@
-image: ubuntu:24.04
+image: archlinux:latest
 
 stages:
   - build
@@ -7,25 +7,26 @@ stages:
 variables:
   CARGO_TERM_COLOR: always
   RUST_BACKTRACE: full
-  DEBIAN_FRONTEND: noninteractive
 
 before_script:
-  - apt-get update -y
-  - apt-get install -y --no-install-recommends \
-    ca-certificates \
-    curl \
-    build-essential \
-    pkg-config \
-    libgtk-4-dev \
-    libadwaita-1-dev \
-    libglib2.0-dev \
-    meson ninja-build \
-    python3 python3-gi \
+  - pacman -Syu --noconfirm
+  - pacman -S --noconfirm --needed \
+    base-devel \
+    gtk4 \
+    libadwaita \
+    glib2 \
+    pkgconf \
+    meson \
+    ninja \
+    python \
+    python-gobject \
     blueprint-compiler \
-    rustc cargo
+    rust \
+    cargo \
+    curl
+  # Optional: make sure cargo is on PATH and rustup is set up
   - export PATH="$HOME/.cargo/bin:$PATH"
-  - rustup default stable || true
-  - cargo install just || true
+  - cargo install just --locked || true
 
 build:
   stage: build
