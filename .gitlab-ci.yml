@@ -10,16 +10,7 @@ variables:
   DEBIAN_FRONTEND: noninteractive
 
 before_script:
-  # 🧩 Recreate missing sources.list
-  - echo "deb http://deb.debian.org/debian bookworm main contrib non-free" > /etc/apt/sources.list
-  - echo "deb http://deb.debian.org/debian bookworm-updates main contrib non-free" >> /etc/apt/sources.list
-  - echo "deb http://security.debian.org/debian-security bookworm-security main contrib non-free" >> /etc/apt/sources.list
-
-  # 🧱 Update package list
-  - apt-get clean
   - apt-get update -y
-
-  # 🦀 Install all system and GTK build dependencies
   - apt-get install -y --no-install-recommends \
     ca-certificates \
     curl \
@@ -32,8 +23,6 @@ before_script:
     python3 python3-gi \
     blueprint-compiler \
     rustc cargo
-
-  # 🧰 Setup Rust environment
   - export PATH="$HOME/.cargo/bin:$PATH"
   - rustup default stable || true
   - cargo install just || true
