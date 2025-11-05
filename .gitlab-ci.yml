@@ -10,24 +10,13 @@ variables:
 
 .setup: &setup
   - pacman -Syu --noconfirm
-  - pacman -S --noconfirm --needed base-devel gtk4 libadwaita glib2 pkgconf meson ninja python python-gobject blueprint-compiler rust cargo curl just
+  - pacman -S --noconfirm --needed base-devel gtk4 libadwaita glib2 pkgconf meson ninja python python-gobject blueprint-compiler rust cargo curl just webkit2gtk-4.1
 
 build:
   stage: build
   before_script:
     - *setup
   script:
-    - pwd
-    - ls -la
-    - echo "=== Searching for Justfile ==="
-    - find . -name "*[Jj]ust*" -type f
-    - echo "=== Which Justfile is just using? ==="
-    - just --evaluate || true
-    - echo "=== Show Justfile that just found ==="
-    - just --dump || cat justfile || echo "No justfile found"
-    - echo "=== Available recipes ==="
-    - just --list
-    - echo "=== Running build-resources then cargo build ==="
     - just build-resources
     - cargo build --release
   artifacts:
