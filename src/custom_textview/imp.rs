@@ -8,7 +8,7 @@ use std::fs;
 use std::path::PathBuf;
 use std::time::Duration;
 use webkit2gtk::WebView;
-use webkit2gtk::prelude::{self, WebViewExt};
+use webkit2gtk::prelude::WebViewExt;
 
 #[derive(CompositeTemplate)]
 #[template(resource = "/org/md-wr/com/text-editor.ui")]

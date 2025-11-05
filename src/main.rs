@@ -1,7 +1,6 @@
 use adw::prelude::*;
 use adw::{Application, ApplicationWindow};
-use gtk::prelude::*;
-use gtk::{gio, glib}; // Removed unused Builder import
+use gtk::{gio, glib};
 
 mod custom_textview;
 use custom_textview::CustomTextView;
