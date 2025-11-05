@@ -1,4 +1,4 @@
-image: debian:bookworm
+image: ubuntu:24.04
 
 stages:
   - build
