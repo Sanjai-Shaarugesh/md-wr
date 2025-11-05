@@ -13,18 +13,40 @@ jobs:
       image: archlinux:latest
 
     steps:
+      - name: Install git (required for checkout in container)
+        run: pacman -Sy --noconfirm git
+
       - name: Checkout code
         uses: actions/checkout@v4
 
-      - name: Verify Justfile exists
+      - name: Debug - List files
         run: |
-          ls -la
-          cat Justfile || echo "Justfile not found!"
+          echo "=== Current directory ==="
+          pwd
+          echo "=== All files ==="
+          ls -laR
+          echo "=== Looking for Justfile ==="
+          find . -name "*[Jj]ust*" -type f
 
       - name: Update system and install dependencies
         run: |
           pacman -Syu --noconfirm
           pacman -S --noconfirm --needed base-devel gtk4 libadwaita glib2 pkgconf meson ninja python python-gobject blueprint-compiler rust cargo curl just
+
+      - name: Show Justfile content
+        run: |
+          if [ -f Justfile ]; then
+            echo "=== Justfile found ==="
+            cat Justfile
+            just --list
+          elif [ -f justfile ]; then
+            echo "=== justfile found (lowercase) ==="
+            cat justfile
+            just --list
+          else
+            echo "=== No Justfile found ==="
+            exit 1
+          fi
 
       - name: Build
         run: just build
@@ -47,6 +69,9 @@ jobs:
     needs: build
 
     steps:
+      - name: Install git
+        run: pacman -Sy --noconfirm git
+
       - name: Checkout code
         uses: actions/checkout@v4
 
